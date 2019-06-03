@@ -2,22 +2,21 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Login
 {
+    /// <summary>
+    /// Manager form; Display historical order/ customer information
+    /// </summary>
     public partial class Manager : Form
     {
         // Used to determine the panel transition direction
         string direction;
+        string Orientation;
 
         // Define fonts once that are used throughout
         Font fontDefault = new Font("Segore UI", 12, FontStyle.Regular);
@@ -27,32 +26,30 @@ namespace Login
 
         // Todo: pass Order object to ctor instead of generating random test data
         //public Manager(Order order)
-
-        public Manager()
+        public Manager(string orientation="portrait")
         {
+            Orientation = orientation;
             InitializeComponent();
 
             //Slightly improve smoothness of timer based animations
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
 
-            //typeof(Panel).InvokeMember("DoubleBuffered",
-            //BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
-            //null, panel1, new object[] { true });
+            typeof(Panel).InvokeMember("DoubleBuffered",
+            BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
+            null, panel1, new object[] { true });
 
-            // Setup UI properties
-            //setup();
 
             // Init Random once here and pass it along. This is only used to generate test values.
             Random random = new Random();
 
-            // Create a test order
-            //Order testOrder = CreateTestOrder(random);
+            // The following is for testing and debugging purposes only:
 
             // Create a list of orders.
-            // This will be passed to the manager pane
-            // and serve all required data.
-            // In the future this should just be passed to the
-            // constructor of this class.
+            // This will be passed to the manager panel as well as details panels
+            // and serve all required data. In the future this should just be
+            // passed to the constructor of this class.
+
+            // This is were all data of the manager panel comes from; A list of Orders.
             List<Order> orderList = CreateTestOrderList(random);
 
             foreach(Order order in orderList)
@@ -60,11 +57,11 @@ namespace Login
                 // Debug only: Print order information to console
                 Console.WriteLine(order.ToString());
 
-
                 // flp stands for flow layout panel.
                 // It acts as container for dynamically created panels.
-                // Create a history panel (main menu of manager view) and add it to the history flp.
-                flpCustomerHistory.Controls.Add(createHistoryPanel(order));
+                // Create a history panel (Info boxes in history view)
+                // for each order and add it to the history flp.
+                flpCustomerHistory.Controls.Add(CreateHistoryPanel(order));
             };
 
         }
@@ -81,8 +78,10 @@ namespace Login
 
             for (int i = 0; i < numberOrders; i++)
             {
-                orderList.Add(CreateTestOrder(random));
+                orderList.Add(CreateTestOrder(random, i));
             }
+
+            orderList.Reverse();
 
             return orderList;
         }
@@ -92,10 +91,10 @@ namespace Login
         /// Create an Order with random values for testing purposes
         /// </summary>
         /// <returns>An Order with sample values</returns>
-        private Order CreateTestOrder(Random random)
+        private Order CreateTestOrder(Random random, int orderNumber)
         {
             // Provide some test values to create an Order
-            // These are later replaced by values from the DB.
+            // These are later replaced by real values from the DB.
 
             int randomHour = random.Next(09, 22);
             int randomMinute = random.Next(1, 59);
@@ -123,8 +122,8 @@ namespace Login
             CultureInfo dutchFormat = new CultureInfo("nl-NL");
 
             // Create random datetime strings
-            string randomStartTime = string.Format("01.06.2019 {0:00}:{1:00}", randomHour, randomMinute);
-            string randomEndTime = string.Format("01.06.2019 {0:00}:{1:00}", randomHourEnd, randomMinuteEnd);
+            string randomStartTime = string.Format("{0:00}.06.2019 {1:00}:{2:00}",orderNumber + 1, randomHour, randomMinute);
+            string randomEndTime = string.Format("{0:00}.06.2019 {1:00}:{2:00}", orderNumber + 1, randomHourEnd, randomMinuteEnd);
 
             // Create DateTime objects
             DateTime startTime = Convert.ToDateTime(randomStartTime, dutchFormat);
@@ -149,20 +148,22 @@ namespace Login
         }
 
 
-
         /// <summary>
         /// Make a smooth transition between two panels.
         /// </summary>
-        private void pageTransition(string dir)
+        private void PageTransition(string dir)
         {
+            // If in potrait mode, transition the details panel postion on top of the history panel.
+            // In landscape mode do nothing since both panels are displayed next to each other.
+            if (Orientation == "portrait") {
+                // Since it seems not intended to pass parameters to EventArgs without subclassing it,
+                // we set a class variable to determine the transition direction
+                // This is retrieved in the timer callback function (animationTick).
+                direction = dir;
 
-            // Since it seems not intended to pass parameters to EventArgs without subclassing it,
-            // we set a class variable to determine the transition direction/ mod
-            // This is retrieved in the timer callback function timer1_Tick.
-            direction = dir;
-
-            // Fire a timer to *smoothly* transition between Panel positions
-            timer1.Start();
+                // Fire a timer to *smoothly* transition between Panel positions
+                animationTimer.Start();
+            }
         }
 
         /// <summary>
@@ -171,29 +172,35 @@ namespace Login
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void timer1_Tick(object sender, EventArgs e)
+        private void AnimationTick(object sender, EventArgs e)
         {
             if (direction == "left")
             {
-                pnlHistory.Left -= 9;
-                pnlDetails.Left -= 23;
+                pnlDetails.BringToFront();
+
+                pnlHistory.Left -= 10;
+                pnlDetails.Left -= 25;
 
                 if (pnlDetails.Left <= 0)
                 {
-                    timer1.Stop();
+                    pnlDetails.Left = 0;
+                    pnlHistory.Left = -360;
+                    animationTimer.Stop();
                 }
             }
             else
             {
-                pnlHistory.Left += 9;
-                pnlDetails.Left += 23;
+                pnlHistory.BringToFront();
+
+                pnlHistory.Left += 25;
+                pnlDetails.Left += 10;
                 
                 // The panel has moved enough
-                if (pnlDetails.Left >= 360)
+                if (pnlHistory.Left >= 0)
                 {
                     pnlHistory.Left = 0;
                     pnlDetails.Left = 360;
-                    timer1.Stop();
+                    animationTimer.Stop();
                 }
             }
         }
@@ -202,7 +209,7 @@ namespace Login
         /// Generate a panel that displays historical order information
         /// This is the manager main menu
         /// </summary>
-        private Panel createHistoryPanel(Order order)
+        private Panel CreateHistoryPanel(Order order)
         {
             // Create Labels and put them in a TableLayoutPanel
             TableLayoutPanel headline = new TableLayoutPanel
@@ -213,7 +220,7 @@ namespace Login
             };
 
             Label labelTime = new Label {
-                Dock = DockStyle.Top,
+                Dock = DockStyle.Left,
                 Size = new Size(120, 25),
                 Font = fontHeading3,
                 Text = order.Start + " - " + order.End,
@@ -222,18 +229,19 @@ namespace Login
             Label labelDate = new Label {
                 Dock = DockStyle.Fill,
                 Font = fontHeading3,
-                Text = order.Date,
-                AutoSize = true
-                //Size = new Size(80, 30)
+                AutoSize = true,
+                Text = order.Date
             };
 
 
             Label labelTable = new Label {
                 Dock = DockStyle.Right,
+                Font = fontHeading3,
                 AutoSize = true,
                 Text = order.Table
             };
 
+            // Add headline labels to header panel
             headline.Controls.Add(labelTime);
             headline.Controls.Add(labelDate);
             headline.Controls.Add(labelTable);
@@ -244,21 +252,21 @@ namespace Login
                 Dock = DockStyle.Top,
             };
             // Pass the order to the button EventHandler
-            btnOrderDetails.Click += new EventHandler((s, e) => button_Click(s, e, order));
+            btnOrderDetails.Click += new EventHandler((s, e) => HistoryButtonClick(s, e, order));
 
             MobileButton btnAssignedStaff = new MobileButton
             {
                 Text = "Assigned Staff",
                 Dock = DockStyle.Top,
             };
-            btnAssignedStaff.Click += new EventHandler((s, e) => button_Click(s, e, order));
+            btnAssignedStaff.Click += new EventHandler((s, e) => HistoryButtonClick(s, e, order));
 
             MobileButton btnFeedback = new MobileButton
             {
                 Text = "Customer Feedback",
                 Dock = DockStyle.Top,
             };
-            btnFeedback.Click += new EventHandler((s, e) => button_Click(s, e, order));
+            btnFeedback.Click += new EventHandler((s, e) => HistoryButtonClick(s, e, order));
             
             // Panel that holds all generated UI elements.
             Panel panel_template = new Panel {
@@ -282,32 +290,33 @@ namespace Login
         /// This method is called whenever one of the history view buttons
         /// is pressed. It is determined which information is shown on the details page.
         /// </summary>
-        void button_Click(object sender, EventArgs e, Order order)
+        void HistoryButtonClick(object sender, EventArgs e, Order order)
         {
             Button button = sender as Button;
             Console.WriteLine("Button with text {0} was clicked", button.Text);
 
-            SetOrderValues(order.Start, order.End, order.Date, order.tableNumber);
+            SetOrderValues(order.Start, order.End, order.Date, order.TableNumber);
             // Set the details pane headline to the text of the button that was clicked
             lblDetailsHeadline.Text = button.Text;
 
             // Clear all previous elements from details panel
             flpDetails.Controls.Clear();
 
-            pageTransition("left");
+            PageTransition("left");
 
 
             // Fill the flow layout panel with the respective elements.
             if (button.Text == "Order Details")
             {
                 // Order details panel
-                flpDetails.Controls.Add(createOrderItemsPanel(order.Menus));
+                flpDetails.Controls.Add(CreateOrderItemsPanel(order.Menus));
             }
             else if (button.Text == "Assigned Staff")
             {
                 // Staff panel
-                flpDetails.Controls.Add(createAssignedStaffPanel(order.Staff));
-            } else if (button.Text  == "Customer Feedback")
+                flpDetails.Controls.Add(CreateAssignedStaffPanel(order.Staff));
+            }
+            else if (button.Text  == "Customer Feedback")
             {
                 // Feedback panel
                 flpDetails.Controls.Add(CreateCommentPanel(order.Feedback));
@@ -325,19 +334,19 @@ namespace Login
         }
 
 
-
         /// <summary>
         /// Called when the Back button on the details page is pressed.
         /// </summary>
-        private void btnBack_Click(object sender, EventArgs e)
+        private void BackClick(object sender, EventArgs e)
         {
             // Transition back to the overview
-            pageTransition("right");
+            PageTransition("right");
         }
 
 
         /// <summary>
         /// Create a panel that displays a customer's comment
+        /// If no author is passed, "Anonymous" is used.
         /// </summary>
         private Panel CreateCommentPanel(string msg, string author="Anonymous")
         {
@@ -347,15 +356,13 @@ namespace Login
                 Text = author,
                 Font = new Font("Segore UI", 14, FontStyle.Bold),
                 AutoSize = true,
-                MinimumSize = new Size(100, 30),
+                MinimumSize = new Size(100, 30),  // Create a margin below the headline
                 Dock = DockStyle.Top
             };
 
             Label messageBox = new Label
             {
                 AutoSize = true,
-                BorderStyle = BorderStyle.None,
-
                 Text = msg,
                 Dock = DockStyle.Fill,
                 MaximumSize = new Size(300, 1000),
@@ -379,8 +386,7 @@ namespace Login
         /// Create a panel that displays the assigned staff of an order
         /// </summary>
         /// <param name="staff"></param>
-        /// <returns></returns>
-        private Panel createAssignedStaffPanel(Dictionary<string, string> staff)
+        private Panel CreateAssignedStaffPanel(Dictionary<string, string> staff)
         {
             // Define fonts once
             Font fontRegular = new Font("Segore UI", 12, FontStyle.Regular);
@@ -394,7 +400,6 @@ namespace Login
                 Font = fontBold,
                 Height = 30,
                 TextAlign = ContentAlignment.MiddleLeft
-                //AutoSize = true
             };
 
             Label cookName = new Label
@@ -452,27 +457,16 @@ namespace Login
             staffPanel.Controls.Add(waiterHeadline);
             staffPanel.Controls.Add(cookName);
             staffPanel.Controls.Add(cookHeadline);
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
 
             return staffPanel;
         }
 
         /// <summary>
-        /// Create a panel that displays all menu's of an order
+        /// Create a panel that displays all menu items of an order
         /// </summary>
         /// <param name="menus"></param>
         /// <returns></returns>
-        private Panel createOrderItemsPanel(string[] menus)
+        private Panel CreateOrderItemsPanel(string[] menus)
         {
             Panel itemsPanel = new Panel
             {
@@ -490,7 +484,7 @@ namespace Login
                 HeaderStyle = ColumnHeaderStyle.None,
             };
             itemsView.Columns.Add("col1", -1, HorizontalAlignment.Left);
-            //itemsView.Scrollable = true;
+
             // Create a ListViewItem for each item in menus array
             foreach (string item in menus)
             {
@@ -498,20 +492,23 @@ namespace Login
                 {
                     Text = item
                 };
+                // Add item to view
                 itemsView.Items.Add(menuItem);
             }
-
+            // Add view to panel
             itemsPanel.Controls.Add(itemsView);
             return itemsPanel;
         }
+
         /// <summary>
-        /// Hide the Manager window and show the Login screen
+        /// Hide the Manager window and show the Login screen when the
+        /// Logout button is pressed.
         /// </summary>
-        private void btnLogout_Click(object sender, EventArgs e)
+        private void LogoutClick(object sender, EventArgs e)
         {
             Hide();
             LoginForm login = new LoginForm();
             login.Show();
-        }   
+        }
     }
 }

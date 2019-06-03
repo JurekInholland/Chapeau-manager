@@ -13,7 +13,8 @@ namespace Login
         {
             this.startTime = startTime;
             this.endTime = endTime;
-            this.tableNumber = tableNumber;
+            TableNumber = tableNumber;
+
             Feedback = feedback;
             Menus = menus;
             Staff = staff;
@@ -22,8 +23,10 @@ namespace Login
         }
 
         private DateTime startTime;
-        public readonly int tableNumber;
         private DateTime endTime;
+
+        public readonly int TableNumber;
+
 
         public string[] Menus;
         public Dictionary<string, string> Staff;
@@ -62,7 +65,7 @@ namespace Login
         {
             get
             {
-                return string.Format("Table {0}", tableNumber);
+                return string.Format("Table {0}", TableNumber);
             }
         }
 

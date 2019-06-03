@@ -7,7 +7,12 @@ namespace Login
 {
     /// <summary>
     /// A custom Button subclass that mimics
-    /// well established mobile ui buttons
+    /// well established mobile ui buttons.
+    /// It features a grey arrow pointing to the right
+    /// and a 1px bottom border, looking like this:
+    /// 
+    ///   Button Text           >
+    /// ___________________________
     /// </summary>
     class MobileButton: Button
     {
@@ -41,17 +46,20 @@ namespace Login
             pevent.Graphics.DrawString(Text, new Font("Segore UI", 12), textBrush, textRec, format);
 
             // Load a resource image file as bitmap and make it transparent
-            Bitmap arrowB = Resources.arrow;
-            arrowB.MakeTransparent();
+            Bitmap arrow = Resources.arrow;
+            arrow.MakeTransparent();
 
             // Draw the image
-            pevent.Graphics.DrawImage(arrowB, IconRec);
+            pevent.Graphics.DrawImage(arrow, IconRec);
 
-            // Draw a 1px wide border on the bottom of the button
+            // Dispose when done
+            arrow.Dispose();
+
+            // Draw a 1px wide border at the bottom of the button
             ControlPaint.DrawBorder(pevent.Graphics, ClientRectangle,
-            Color.Black, 0, ButtonBorderStyle.Solid,
-            Color.Black, 0, ButtonBorderStyle.Solid,
-            Color.Black, 0, ButtonBorderStyle.Solid,
+            Color.White, 0, ButtonBorderStyle.None,
+            Color.White, 0, ButtonBorderStyle.None,
+            Color.White, 0, ButtonBorderStyle.None,
             Color.FromArgb(149, 149, 149), 1, ButtonBorderStyle.Solid);
         }
     }
