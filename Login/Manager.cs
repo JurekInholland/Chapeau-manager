@@ -16,7 +16,6 @@ namespace Login
     public partial class Manager : Form
     {
 
-        
         // Used to determine the panel transition direction
         string direction;
         string Orientation;
@@ -31,21 +30,14 @@ namespace Login
         //public Manager(Order order)
         public Manager(string orientation="portrait")
         {
-            Orientation = orientation;
             InitializeComponent();
 
-            //Slightly improve smoothness of timer based animations
-            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
-
-            typeof(Panel).InvokeMember("DoubleBuffered",
-            BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
-            null, panel1, new object[] { true });
+            // Animations only happen in portrait mode
+            Orientation = orientation;
 
 
             // Init Random once here and pass it along. This is only used to generate test values.
             Random random = new Random();
-
-            // The following is for testing and debugging purposes only:
 
             // Create a list of orders.
             // This will be passed to the manager panel as well as details panels
@@ -93,7 +85,7 @@ namespace Login
         /// Debugging only
         /// Create an Order with random values for testing purposes
         /// </summary>
-        /// <returns>An Order with sample values</returns>
+        /// <returns>An Order with random values</returns>
         private Order CreateTestOrder(Random random, int orderNumber)
         {
             // Provide some test values to create an Order
@@ -142,7 +134,7 @@ namespace Login
                 { "Bartender", "Lars Van Dijk" }
             };
 
-            string feedback = "We found the food really dope. The french do know how to cook! The staff was friendly and well informed and the food was perfect.";
+            string feedback = "We found it really dope. The french do know how to cook! The staff was friendly and well informed and the food was tasty af.";
 
             // Create a new order based on the random values
             Order order = new Order(startTime, endTime, randomTable, selectedMenus, staff, satisfaction, feedback: feedback);
@@ -173,8 +165,6 @@ namespace Login
         /// This is called repeatedly during the panel transition animation.
         /// The values are still tweakable but already come quite close to the desired behavior.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void AnimationTick(object sender, EventArgs e)
         {
             if (direction == "left")
@@ -209,7 +199,7 @@ namespace Login
 
         /// <summary>
         /// Generate a panel that displays historical order information
-        /// This is the manager main menu
+        /// This is the manager main menu.
         /// </summary>
         private Panel CreateHistoryPanel(Order order)
         {
@@ -244,7 +234,7 @@ namespace Login
                 case 1:
                     smiley = new Bitmap(Resources.Smiley_neutral);
                     break;
-                default:
+                default:  // Use default here to always have smiley defined
                     smiley = new Bitmap(Resources.Smiley_happy);
                     break;
             }
@@ -265,7 +255,6 @@ namespace Login
                 Text = order.TableNumber.ToString(),
                 Size = new Size(55, 20),
                 LabelIcon = new Bitmap(Resources.Table)
-
             };
 
             // Add headline labels to header panel
@@ -295,7 +284,7 @@ namespace Login
             };
             btnFeedback.Click += new EventHandler((s, e) => HistoryButtonClick(s, e, order));
             
-            // Panel that holds all generated UI elements.
+            // Panel that holds all generated UI elements (for one order).
             Panel panel_template = new Panel {
                 Size = new Size(336, 150),
                 Margin = new Padding(0, 0, 0, 25)
@@ -350,6 +339,8 @@ namespace Login
 
         /// <summary>
         /// Set information on the details page that are based on the respective order
+        /// and the same regardless of which information is shown
+        /// Todo: Discuss if icons would be beneficial here
         /// </summary>
         private void SetOrderValues(string startTime, string endTime, string date, int tableNr)
         {
@@ -368,6 +359,8 @@ namespace Login
             PageTransition("right");
         }
 
+        // ****************************************************************************************
+        // The following methods return the respective information panels
 
         /// <summary>
         /// Create a panel that displays a customer's comment
@@ -488,6 +481,7 @@ namespace Login
 
         /// <summary>
         /// Create a panel that displays all menu items of an order
+        /// inside a listview
         /// </summary>
         /// <param name="menus"></param>
         /// <returns></returns>
