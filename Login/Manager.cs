@@ -1,5 +1,6 @@
 ﻿// Made by Jurek Baumann, 2019
 
+using Login.Properties;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -14,6 +15,8 @@ namespace Login
     /// </summary>
     public partial class Manager : Form
     {
+
+        
         // Used to determine the panel transition direction
         string direction;
         string Orientation;
@@ -97,11 +100,11 @@ namespace Login
             // These are later replaced by real values from the DB.
 
             int randomHour = random.Next(09, 22);
-            int randomMinute = random.Next(1, 59);
-            int randomMinuteEnd = random.Next(1, 59);
-            int randomHourEnd = randomHour + random.Next(1, 2);
-            int randomTable = random.Next(1, 11);
-
+            int randomMinute = random.Next(1, 60);
+            int randomMinuteEnd = random.Next(1, 60);
+            int randomHourEnd = randomHour + random.Next(1, 3);
+            int randomTable = random.Next(1, 12);
+            int satisfaction = random.Next(0, 3);
 
             // Array of menu items from which some are randomly chosen.
             string[] allMenuItems = new string[]
@@ -142,7 +145,7 @@ namespace Login
             string feedback = "We found the food really dope. The french do know how to cook! The staff was friendly and well informed and the food was perfect.";
 
             // Create a new order based on the random values
-            Order order = new Order(startTime, endTime, randomTable, selectedMenus, staff, feedback: feedback);
+            Order order = new Order(startTime, endTime, randomTable, selectedMenus, staff, satisfaction, feedback: feedback);
 
             return order;
         }
@@ -188,14 +191,13 @@ namespace Login
                     animationTimer.Stop();
                 }
             }
-            else
+            else if (direction == "right")
             {
                 pnlHistory.BringToFront();
 
                 pnlHistory.Left += 25;
                 pnlDetails.Left += 10;
                 
-                // The panel has moved enough
                 if (pnlHistory.Left >= 0)
                 {
                     pnlHistory.Left = 0;
@@ -219,26 +221,51 @@ namespace Login
                 ColumnCount = 3
             };
 
-            Label labelTime = new Label {
+            IconLabel labelTime = new IconLabel
+            {
                 Dock = DockStyle.Left,
-                Size = new Size(120, 25),
+                Size = new Size(130, 20),
                 Font = fontHeading3,
                 Text = order.Start + " - " + order.End,
+                LabelIcon = new Bitmap(Resources.clock_icon)
+
             };
 
-            Label labelDate = new Label {
+            // The smiley that indicates customer satisfaction
+            // is the icon of the Date IconLabel. It is debateable if 
+            // this is the cleanest way to display it..
+            Bitmap smiley;
+
+            switch (order.Satisfaction)
+            {
+                case 0:
+                    smiley = new Bitmap(Resources.Smiley_sad);
+                    break;
+                case 1:
+                    smiley = new Bitmap(Resources.Smiley_neutral);
+                    break;
+                default:
+                    smiley = new Bitmap(Resources.Smiley_happy);
+                    break;
+            }
+
+            IconLabel labelDate = new IconLabel
+            {
                 Dock = DockStyle.Fill,
                 Font = fontHeading3,
-                AutoSize = true,
-                Text = order.Date
+                Size = new Size(145, 20),
+                Text = order.Date,
+                IconPosition = "right",
+                LabelIcon = smiley
             };
 
 
-            Label labelTable = new Label {
-                Dock = DockStyle.Right,
+            IconLabel labelTable = new IconLabel {
                 Font = fontHeading3,
-                AutoSize = true,
-                Text = order.Table
+                Text = order.TableNumber.ToString(),
+                Size = new Size(55, 20),
+                LabelIcon = new Bitmap(Resources.Table)
+
             };
 
             // Add headline labels to header panel
@@ -272,7 +299,6 @@ namespace Login
             Panel panel_template = new Panel {
                 Size = new Size(336, 150),
                 Margin = new Padding(0, 0, 0, 25)
-
             };
 
             // Add buttons to panel
@@ -293,7 +319,6 @@ namespace Login
         void HistoryButtonClick(object sender, EventArgs e, Order order)
         {
             Button button = sender as Button;
-            Console.WriteLine("Button with text {0} was clicked", button.Text);
 
             SetOrderValues(order.Start, order.End, order.Date, order.TableNumber);
             // Set the details pane headline to the text of the button that was clicked
@@ -472,7 +497,6 @@ namespace Login
             {
                 Size = new Size(325, 1000),
                 Margin = new Padding(20, 0, 0, 0),
-
             };
 
             ListView itemsView = new ListView

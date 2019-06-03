@@ -48,7 +48,6 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pBLogin.BackColor = System.Drawing.Color.Transparent;
             this.pBLogin.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            //this.pBLogin.Image = global::Login.Properties.Resources.button1;
             this.pBLogin.InitialImage = null;
             this.pBLogin.Location = new System.Drawing.Point(2, 578);
             this.pBLogin.Margin = new System.Windows.Forms.Padding(0);
@@ -112,12 +111,12 @@
             // 
             // circularButton1
             // 
-            this.circularButton1.Location = new System.Drawing.Point(149, 322);
-            this.circularButton1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.circularButton1.Location = new System.Drawing.Point(147, 623);
+            this.circularButton1.Margin = new System.Windows.Forms.Padding(2);
             this.circularButton1.Name = "circularButton1";
             this.circularButton1.Size = new System.Drawing.Size(78, 49);
             this.circularButton1.TabIndex = 7;
-            this.circularButton1.Text = "circularButton1";
+            this.circularButton1.Text = "Manager login";
             this.circularButton1.UseVisualStyleBackColor = true;
             this.circularButton1.Click += new System.EventHandler(this.circularButton1_Click);
             // 

@@ -55,7 +55,7 @@ namespace Login
             // Dispose when done
             arrow.Dispose();
 
-            // Draw a 1px wide border at the bottom of the button
+            // Draw a grey 1px wide border at the bottom of the button
             ControlPaint.DrawBorder(pevent.Graphics, ClientRectangle,
             Color.White, 0, ButtonBorderStyle.None,
             Color.White, 0, ButtonBorderStyle.None,

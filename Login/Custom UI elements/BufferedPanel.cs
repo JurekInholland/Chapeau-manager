@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace Login
@@ -11,21 +10,14 @@ namespace Login
     {
         public BufferedPanel()
         {
-            InitializeComponent();
             SetStyle(ControlStyles.AllPaintingInWmPaint |
               ControlStyles.OptimizedDoubleBuffer |
               ControlStyles.UserPaint, true);
         }
 
-        private void InitializeComponent()
-        {
-            return;
-        }
-
         public BufferedPanel(IContainer container)
         {
             container.Add(this);
-            InitializeComponent();
             SetStyle(ControlStyles.AllPaintingInWmPaint |
               ControlStyles.OptimizedDoubleBuffer |
               ControlStyles.UserPaint, true);

@@ -141,7 +141,7 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 15F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 18F));
             this.tableLayoutPanel1.Controls.Add(this.lblDetailsTime, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.lblDetailsDate, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.lblDetailsTable, 3, 0);
@@ -168,7 +168,7 @@
             this.lblDetailsDate.AutoSize = true;
             this.lblDetailsDate.Dock = System.Windows.Forms.DockStyle.Left;
             this.lblDetailsDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDetailsDate.Location = new System.Drawing.Point(133, 0);
+            this.lblDetailsDate.Location = new System.Drawing.Point(132, 0);
             this.lblDetailsDate.Name = "lblDetailsDate";
             this.lblDetailsDate.Size = new System.Drawing.Size(43, 28);
             this.lblDetailsDate.TabIndex = 2;
@@ -179,7 +179,7 @@
             this.lblDetailsTable.AutoSize = true;
             this.lblDetailsTable.Dock = System.Windows.Forms.DockStyle.Right;
             this.lblDetailsTable.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDetailsTable.Location = new System.Drawing.Point(300, 0);
+            this.lblDetailsTable.Location = new System.Drawing.Point(298, 0);
             this.lblDetailsTable.Name = "lblDetailsTable";
             this.lblDetailsTable.Size = new System.Drawing.Size(49, 28);
             this.lblDetailsTable.TabIndex = 3;
@@ -190,7 +190,7 @@
             this.flpDetails.Location = new System.Drawing.Point(0, 116);
             this.flpDetails.Margin = new System.Windows.Forms.Padding(0);
             this.flpDetails.Name = "flpDetails";
-            this.flpDetails.Size = new System.Drawing.Size(368, 611);
+            this.flpDetails.Size = new System.Drawing.Size(368, 647);
             this.flpDetails.TabIndex = 4;
             // 
             // pnlHistory
@@ -212,7 +212,7 @@
             this.flpCustomerHistory.Location = new System.Drawing.Point(0, 117);
             this.flpCustomerHistory.Margin = new System.Windows.Forms.Padding(0);
             this.flpCustomerHistory.Name = "flpCustomerHistory";
-            this.flpCustomerHistory.Size = new System.Drawing.Size(380, 611);
+            this.flpCustomerHistory.Size = new System.Drawing.Size(380, 647);
             this.flpCustomerHistory.TabIndex = 4;
             // 
             // pnlHistoryHeader
@@ -268,7 +268,7 @@
             this.BackColor = System.Drawing.Color.White;
             this.BackgroundImage = global::Login.Properties.Resources.background3;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.ClientSize = new System.Drawing.Size(832, 773);
+            this.ClientSize = new System.Drawing.Size(359, 773);
             this.Controls.Add(this.panel1);
             this.Name = "Manager";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
