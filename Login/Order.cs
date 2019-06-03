@@ -28,11 +28,6 @@ namespace Login
         public string[] Menus;
         public Dictionary<string, string> Staff;
 
-        private readonly string date;
-        private readonly string start;
-        private readonly string end;
-
-
         public string Feedback;
 
         public string Customer;

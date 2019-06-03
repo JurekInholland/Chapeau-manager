@@ -71,6 +71,9 @@
       <DependentUpon>Manager.cs</DependentUpon>
     </Compile>
     <Compile Include="ManagerData.cs" />
+    <Compile Include="MobileButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Order.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -123,6 +126,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\back_btn.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\arrow.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
