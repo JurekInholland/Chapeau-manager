@@ -189,9 +189,10 @@ namespace Login
                 pnlDetails.Left += 23;
                 
                 // The panel has moved enough
-                if (pnlDetails.Left >= 375)
+                if (pnlDetails.Left >= 360)
                 {
                     pnlHistory.Left = 0;
+                    pnlDetails.Left = 360;
                     timer1.Stop();
                 }
             }
@@ -346,36 +347,29 @@ namespace Login
                 Text = author,
                 Font = new Font("Segore UI", 14, FontStyle.Bold),
                 AutoSize = true,
+                MinimumSize = new Size(100, 30),
                 Dock = DockStyle.Top
             };
 
-            TextBox messageBox = new TextBox
+            Label messageBox = new Label
             {
-                Multiline = true,
+                AutoSize = true,
                 BorderStyle = BorderStyle.None,
 
                 Text = msg,
                 Dock = DockStyle.Fill,
                 MaximumSize = new Size(300, 1000),
-                Left = 50
+                Font = new Font("Segore UI", 12)
 
             };
-
-            //Label message = new Label
-            //{
-            //    Text = msg,
-            //    AutoSize = true,
-            //    Location = new Point(0, 25),
-            //};
 
             Panel commentPanel = new Panel
             {
-                Size = new Size(375, 75),
-                //BackColor = Color.Aquamarine,
+                Size = new Size(375, 1000),
                 Margin = new Padding(20, 0, 0, 0),
             };
-            commentPanel.Controls.Add(messageBox);
 
+            commentPanel.Controls.Add(messageBox);
             commentPanel.Controls.Add(authorName);
 
             return commentPanel;
@@ -395,69 +389,80 @@ namespace Login
             // Create elements
             Label cookHeadline = new Label
             {
+                Dock = DockStyle.Top,
                 Text = "Cook:",
                 Font = fontBold,
-                AutoSize = true
+                Height = 30,
+                TextAlign = ContentAlignment.MiddleLeft
+                //AutoSize = true
             };
 
             Label cookName = new Label
             {
                 Text = staff["Cook"],
-                Location = new Point(0, 25),
+                Dock = DockStyle.Top,
                 BackColor = Color.White,
-                AutoSize = true
-
             };
 
             Label waiterHeadline = new Label
             {
                 Text = "Waiter:",
                 Font = fontBold,
-                Location = new Point(0, 50),
-                AutoSize = true
-
+                Dock = DockStyle.Top,
+                Height = 30,
+                TextAlign = ContentAlignment.MiddleLeft
             };
 
             Label waiterName = new Label
             {
                 Text = staff["Waiter"],
-                Location = new Point(0, 75),
+                Dock = DockStyle.Top,
                 BackColor = Color.White,
-                AutoSize = true
-
             };
 
             Label bartenderHeadline = new Label
             {
                 Text = "Bartender:",
                 Font = fontBold,
-                Location = new Point(0, 100),
-                AutoSize = true
+                Dock = DockStyle.Top,
+                Height = 30,
+                TextAlign = ContentAlignment.MiddleLeft
 
             };
 
             Label bartenderName = new Label
             {
                 Text = staff["Bartender"],
-                Location = new Point(0, 125),
+                Dock = DockStyle.Top,
                 BackColor = Color.White,
-                AutoSize = true
 
             };
 
             Panel staffPanel = new Panel
             {
                 Font = fontRegular,
-                Size = new Size(375, 175),
-                BackColor = Color.HotPink
-            };
+                Size = new Size(375, 158),
+                BackColor = Color.LightGray,
+                Margin = new Padding(20, 0, 0, 0),
 
-            staffPanel.Controls.Add(cookHeadline);
-            staffPanel.Controls.Add(cookName);
-            staffPanel.Controls.Add(waiterHeadline);
-            staffPanel.Controls.Add(waiterName);
-            staffPanel.Controls.Add(bartenderHeadline);
+            };
             staffPanel.Controls.Add(bartenderName);
+            staffPanel.Controls.Add(bartenderHeadline);
+            staffPanel.Controls.Add(waiterName);
+            staffPanel.Controls.Add(waiterHeadline);
+            staffPanel.Controls.Add(cookName);
+            staffPanel.Controls.Add(cookHeadline);
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
 
             return staffPanel;
         }
